@@ -1,33 +1,74 @@
-import 'package:akkredit/auth/signup_page.dart';
+// ignore_for_file: prefer_const_constructors
+
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_remix/flutter_remix.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
-import '../styles.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class Login extends StatefulWidget {
-  const Login({super.key});
+  final VoidCallback showRegisterPage;
+  Login({Key? key, required this.showRegisterPage}) : super(key: key);
 
   @override
   State<Login> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
-  bool _obscured = true;
+  //text controllers\
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  GoogleSignInAccount? _user;
+  GoogleSignInAccount get user => _user!;
 
   Future signIn() async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
-    );
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+    } catch (error) {
+      print(error);
+      var snackBar = SnackBar(
+        elevation: 0,
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.transparent,
+        content: AwesomeSnackbarContent(
+          title: 'An Error Occurred',
+          message:
+              'Credential Mismatch.\nPlease try Again with the correct credentials',
+          contentType: ContentType.failure,
+        ),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
-  void _toggleObscured() {
-    setState(() {
-      _obscured = !_obscured;
-    });
+  Future signInWithGoogle() async {
+    final googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) return;
+    _user = googleUser;
+
+    final googleAuth = await googleUser.authentication;
+    final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+    try {
+      await FirebaseAuth.instance.signInWithCredential(credential);
+    } catch (FireBaseAuthException) {
+      var snackBar = SnackBar(
+        elevation: 0,
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.transparent,
+        content: AwesomeSnackbarContent(
+          title: 'Error Occurred',
+          message: 'Sign in credentials alreay exists',
+          contentType: ContentType.success,
+        ),
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
   }
 
   @override
@@ -39,134 +80,132 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: buttondecoration,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(24)),
+    return Scaffold(
+      backgroundColor: Colors.grey[200],
+      body: SafeArea(
+          child: Center(
+              child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          // crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text("Login",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                )),
+            SizedBox(height: 30),
+
+            //e-mail
+            SizedBox(
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 20),
-                      Text(
-                        "Welcome back!",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      //email
-                      TextField(
-                        controller: _emailController,
-                        cursorColor: primaryOrange,
-                        decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(12)),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: primaryOrange),
-                                borderRadius: BorderRadius.circular(12)),
-                            hintText: 'E-mail',
-                            fillColor: Colors.grey[100],
-                            filled: true),
-                      ),
-                      SizedBox(height: 10),
-                      //password
-                      TextField(
-                        controller: _passwordController,
-                        cursorColor: primaryOrange,
-                        obscureText: _obscured,
-                        decoration: InputDecoration(
-                            suffixIcon: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: GestureDetector(
-                                onTap: _toggleObscured,
-                                child: Container(
-                                  height: 30,
-                                  width: 30,
-                                  child: Icon(
-                                      _obscured
-                                          ? FlutterRemix.eye_close_line
-                                          : FlutterRemix.eye_line,
-                                      color: primaryOrange),
-                                ),
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                                borderRadius: BorderRadius.circular(12)),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: primaryOrange),
-                                borderRadius: BorderRadius.circular(12)),
-                            hintText: 'Password',
-                            fillColor: Colors.grey[100],
-                            filled: true),
-                      ),
-                      SizedBox(height: 10),
-                      GestureDetector(
-                        onTap: signIn,
-                        child: Container(
-                          height: 55,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                primaryOrange,
-                                secondaryOrange,
-                              ],
-                            ),
-                          ),
-                          child: Center(
-                              child: Text(
-                            "Sign In",
-                            style: buttonText,
-                          )),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Don't have an account?",
-                            style: TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return SignUp();
-                                  },
-                                ));
-                              },
-                              child: Text("Sign up",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      color: primaryOrange)))
-                        ],
-                      )
-                    ],
-                  ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                child: TextField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.circular(12)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.indigo),
+                          borderRadius: BorderRadius.circular(12)),
+                      hintText: 'E-mail',
+                      fillColor: Colors.white,
+                      filled: true),
                 ),
               ),
             ),
-          ),
+
+            //password
+            SizedBox(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                child: TextField(
+                  obscureText: true,
+                  controller: _passwordController,
+                  decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white),
+                          borderRadius: BorderRadius.circular(12)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.indigo),
+                          borderRadius: BorderRadius.circular(12)),
+                      hintText: 'Password',
+                      fillColor: Colors.white,
+                      filled: true),
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            //sign-in
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: signIn,
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: EdgeInsets.all(20),
+                    elevation: 0,
+                    primary: Colors.indigo,
+                  ),
+                  child: Text('Sign In'),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Don't have an account?",
+                  style: TextStyle(fontSize: 14),
+                ),
+                TextButton(
+                    onPressed: widget.showRegisterPage,
+                    child: Text(
+                      'Register now',
+                      style: TextStyle(color: Colors.indigo, fontSize: 14),
+                    ))
+              ],
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+              child: SizedBox(
+                width: double.infinity,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(25),
+                  child: ElevatedButton(
+                    onPressed: signInWithGoogle,
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: EdgeInsets.all(20),
+                      primary: Colors.deepPurple,
+                      elevation: 10,
+                    ),
+                    child: Row(children: [
+                      Icon(FlutterRemix.google_fill),
+                      Text('Sign In With Google')
+                    ]),
+                  ),
+                ),
+              ),
+            )
+          ],
         ),
-      ),
+      ))),
     );
   }
 }
