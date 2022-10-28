@@ -63,12 +63,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAj8GFt-WOTnVfc3h83014AWgb5YGg5v28',
-    appId: '1:1049537020338:ios:2228cb58e912c9564ea4ab',
+    appId: '1:1049537020338:ios:183bbd7ee6c28e9a4ea4ab',
     messagingSenderId: '1049537020338',
     projectId: 'akkredit-6f58d',
     storageBucket: 'akkredit-6f58d.appspot.com',
-    iosClientId: '1049537020338-qormj4ebovik0l0ldtle7t4625ed02dr.apps.googleusercontent.com',
-    iosBundleId: 'com.example.akkredit',
+    iosClientId: '1049537020338-j46t3a5crr794bfjgp5rfe8lqqj3e5ta.apps.googleusercontent.com',
+    iosBundleId: 'com.akkredit',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
