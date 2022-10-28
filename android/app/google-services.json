@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1049537020338",
+    "project_id": "akkredit-6f58d",
+    "storage_bucket": "akkredit-6f58d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1049537020338:android:753284482ba072cb4ea4ab",
+        "android_client_info": {
+          "package_name": "com.example.akkredit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1049537020338-cr7lqect0nl2h2r2iu2modpacauunaub.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnuupx6drpk_rq69hoS1lJP_CSqOfuCeI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1049537020338-cr7lqect0nl2h2r2iu2modpacauunaub.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1049537020338-qormj4ebovik0l0ldtle7t4625ed02dr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.akkredit"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
