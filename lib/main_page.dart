@@ -1,4 +1,4 @@
-import 'package:akkredit/auth/login_page.dart';
+import 'package:akkredit/auth/auth_page.dart';
 import 'package:akkredit/pages/app_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,12 +10,19 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder<User?>(
-          stream: FirebaseAuth.instance.authStateChanges(),
+          stream: FirebaseAuth.instance.idTokenChanges(),
           builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return AppRoute();
+            //print(snapshot.hasData);
+            if (snapshot.connectionState != ConnectionState.waiting) {
+              if (snapshot.hasData) {
+                return AppRoute();
+              } else {
+                return AuthPage();
+              }
             } else {
-              return Login();
+              return CircularProgressIndicator(
+                color: Colors.deepPurple,
+              );
             }
           }),
     );

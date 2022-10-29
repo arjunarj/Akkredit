@@ -1,5 +1,6 @@
 import 'package:akkredit/pages/homepage.dart';
 import 'package:akkredit/pages/profile_page.dart';
+import 'package:akkredit/pages/wallet_page.dart';
 import 'package:akkredit/styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ class _AppRouteState extends State<AppRoute> {
   List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     ProfilePage(),
+    WalletPage(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -56,6 +58,10 @@ class _AppRouteState extends State<AppRoute> {
               GButton(
                 icon: FlutterRemix.user_3_line,
                 text: 'Profile',
+              ),
+              GButton(
+                icon: FlutterRemix.wallet_3_line,
+                text: 'Wallet',
               ),
             ],
             selectedIndex: _selectedIndex,
