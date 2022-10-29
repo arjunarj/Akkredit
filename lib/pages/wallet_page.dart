@@ -1,3 +1,4 @@
+import 'package:akkredit/utils/WalletCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,10 @@ class _WalletPageState extends State<WalletPage> {
       });
     });
   }
+
   Widget build(BuildContext context) {
-    return Scaffold(body:Text("Hello"));
+    return Scaffold(
+      body: WalletCard(),
+    );
   }
 }
