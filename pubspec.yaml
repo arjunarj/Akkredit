@@ -48,6 +48,8 @@ dependencies:
   accordion: ^2.5.1
   awesome_snackbar_content: ^0.0.8
   google_sign_in: ^5.4.2
+  file_picker: ^5.2.2
+  firebase_storage: ^10.3.11
 
 dev_dependencies:
   flutter_test:

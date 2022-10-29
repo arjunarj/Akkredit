@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:akkredit/auth/signup_page.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +8,7 @@ import 'package:flutter_remix/flutter_remix.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class Login extends StatefulWidget {
-  final VoidCallback showRegisterPage;
-  Login({Key? key, required this.showRegisterPage}) : super(key: key);
+  Login({Key? key}) : super(key: key);
 
   @override
   State<Login> createState() => _LoginState();
@@ -28,7 +28,7 @@ class _LoginState extends State<Login> {
         password: _passwordController.text.trim(),
       );
     } catch (error) {
-      print(error);
+      print("Error!!!!");
       var snackBar = SnackBar(
         elevation: 0,
         behavior: SnackBarBehavior.floating,
@@ -169,7 +169,13 @@ class _LoginState extends State<Login> {
                   style: TextStyle(fontSize: 14),
                 ),
                 TextButton(
-                    onPressed: widget.showRegisterPage,
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RegisterPage(),
+                          ));
+                    },
                     child: Text(
                       'Register now',
                       style: TextStyle(color: Colors.indigo, fontSize: 14),

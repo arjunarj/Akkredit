@@ -1,4 +1,3 @@
-import 'package:akkredit/auth/auth_page.dart';
 import 'package:akkredit/auth/login_page.dart';
 import 'package:akkredit/pages/app_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,7 +15,7 @@ class MainPage extends StatelessWidget {
             if (snapshot.hasData) {
               return AppRoute();
             } else {
-              return AuthPage();
+              return Login();
             }
           }),
     );
