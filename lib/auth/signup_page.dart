@@ -3,10 +3,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:stellar_flutter_sdk/stellar_flutter_sdk.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key}) : super(key: key);
-
+  final VoidCallback showLoginPage;
+  const RegisterPage({Key? key, required this.showLoginPage}) : super(key: key);
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
@@ -39,6 +40,19 @@ class _RegisterPageState extends State<RegisterPage> {
           email: _emailController.text.trim(),
           password: _passwordController.text.trim());
     }
+    late final user = FirebaseAuth.instance.currentUser!;
+    String fName = "";
+    String mnemonic = await Wallet.generate24WordsMnemonic();
+    Wallet wallet = await Wallet.from(mnemonic);
+
+    KeyPair keyPair = await wallet.getKeyPair(index: 0);
+    await FriendBot.fundTestAccount(keyPair.accountId);
+    String pKey = keyPair.accountId;
+    FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+      'name': fName,
+      'wallet': pKey,
+      'wallet_mnemonic': mnemonic
+    });
   }
 
   @override
@@ -143,7 +157,7 @@ class _RegisterPageState extends State<RegisterPage> {
             SizedBox(
               height: 20,
             ),
-            Row(
+            Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
@@ -151,15 +165,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   style: TextStyle(fontSize: 14),
                 ),
                 TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    onPressed: widget.showLoginPage,
                     child: Text(
                       'Login',
                       style: TextStyle(color: Colors.indigo, fontSize: 14),
                     ))
               ],
-            )
+            ),
           ],
         ),
       ))),
