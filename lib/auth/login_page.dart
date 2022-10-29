@@ -8,7 +8,8 @@ import 'package:flutter_remix/flutter_remix.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class Login extends StatefulWidget {
-  Login({Key? key}) : super(key: key);
+  final VoidCallback showRegisterPage;
+  Login({Key? key, required this.showRegisterPage}) : super(key: key);
 
   @override
   State<Login> createState() => _LoginState();
@@ -169,13 +170,7 @@ class _LoginState extends State<Login> {
                   style: TextStyle(fontSize: 14),
                 ),
                 TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RegisterPage(),
-                          ));
-                    },
+                    onPressed: widget.showRegisterPage,
                     child: Text(
                       'Register now',
                       style: TextStyle(color: Colors.indigo, fontSize: 14),
